@@ -661,7 +661,7 @@
 <script type="module">
   import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
   import {
-    getFirestore, collection, getDocs, setDoc, doc
+    getFirestore, collection, getDocs, setDoc, doc, deleteDoc
   } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
   // 🔧 REMPLACE ces valeurs par celles de TON projet Firebase
@@ -681,7 +681,7 @@
 
   // On expose ce qu'il faut sur window pour pouvoir s'en servir
   // dans le <script> classique plus bas (qui n'est pas un module).
-  window.__firebase = { db, collection, getDocs, setDoc, doc };
+  window.__firebase = { db, collection, getDocs, setDoc, doc, deleteDoc };
 </script>
 </head>
 <body>
@@ -904,8 +904,8 @@
   <div class="msg-page-wrap">
     <button class="btn btn-bleu btn-sm" style="margin-bottom:20px;" onclick="showPage('home')">← Retour</button>
 
-    <div class="section-title" style="margin-bottom:4px;">💰 Commissions (15% par service)</div>
-    <div class="section-sub">Chaque professionnel reverse 15% du montant de chaque service réalisé grâce à un client trouvé sur TravauxPro. Déclarez un service ci-dessous et suivez les paiements.</div>
+    <div class="section-title" style="margin-bottom:4px;">💰 Commissions (10% par service)</div>
+    <div class="section-sub">Chaque professionnel reverse 10% du montant de chaque service réalisé grâce à un client trouvé sur TravauxPro. Déclarez un service ci-dessous et suivez les paiements.</div>
 
     <div class="comm-summary" id="comm-summary"></div>
 
@@ -926,7 +926,7 @@
         <input type="text" id="comm-note" placeholder="Ex: Réparation plomberie chez Mme Koné">
       </div>
       <div id="comm-form-error" style="display:none;padding:10px 14px;border-radius:9px;font-size:0.88rem;font-weight:500;background:#FEF0F0;color:#C0392B;border:1px solid #F5C6C6;margin-bottom:12px;">⚠️ Veuillez choisir un professionnel et entrer un montant valide.</div>
-      <button class="btn btn-orange" onclick="declarerServiceAdmin()">✅ Enregistrer le service et calculer les 15%</button>
+      <button class="btn btn-orange" onclick="declarerServiceAdmin()">✅ Enregistrer le service et calculer les 10%</button>
     </div>
 
     <div class="comm-table-wrap">
@@ -936,7 +936,7 @@
             <th>Professionnel</th>
             <th>Service</th>
             <th>Montant</th>
-            <th>15% dus</th>
+            <th>10% dus</th>
             <th>Statut</th>
             <th>Date</th>
             <th>Action</th>
@@ -1497,8 +1497,16 @@ function voirProfil(id) {
 // SUPPRIMER UN PROFIL
 // ========================
 let deleteTargetId = null;
+const MOT_DE_PASSE_ADMIN = "admin2026"; // 🔧 Change ce mot de passe quand tu veux
 
 function ouvrirDelete(id) {
+  const saisie = prompt("🔒 Mot de passe administrateur requis pour supprimer un profil :");
+  if (saisie === null) return; // l'utilisateur a annulé
+  if (saisie !== MOT_DE_PASSE_ADMIN) {
+    alert("❌ Mot de passe incorrect. Suppression annulée.");
+    return;
+  }
+
   const w = workers.find(x => x.id === id);
   if (!w) return;
   deleteTargetId = id;
@@ -1510,10 +1518,15 @@ function ouvrirDelete(id) {
   document.getElementById('modal-delete').classList.add('open');
 }
 
-function confirmerDelete() {
+async function confirmerDelete() {
   if (deleteTargetId === null) return;
+  const { db, doc, deleteDoc } = window.__firebase;
+  try {
+    await deleteDoc(doc(db, 'workers', String(deleteTargetId)));
+  } catch (e) {
+    console.error('Erreur de suppression Firestore :', e);
+  }
   workers = workers.filter(w => w.id !== deleteTargetId);
-  saveWorkers();
   updateStats();
   filtrerWorkers();
   fermerModalDelete();
@@ -1874,7 +1887,7 @@ function envoyerMessage() {
 
 
 // ========================================================
-// 💰 COMMISSIONS — 20% reversés par le professionnel
+// 💰 COMMISSIONS — 10% reversés par le professionnel
 // pour chaque service obtenu via TravauxPro.
 // Déclaration possible par le PRO (depuis sa carte) ou par
 // l'ADMIN (depuis la page Commissions). Suivi payé/non payé
@@ -1996,7 +2009,7 @@ function renderHistoriquePage() {
 }
 
 
-const TAUX_COMMISSION = 0.20;
+const TAUX_COMMISSION = 0.10;
 let commissions = [];
 let declarationWorkerId = null;
 
@@ -2062,7 +2075,7 @@ function ouvrirDeclarationService(workerId) {
   declarationWorkerId = workerId;
   const m = METIERS[w.metier];
   document.getElementById('declaration-pro-name').innerHTML =
-    `${m?.emoji || ''} <strong>${w.prenom} ${w.nom}</strong> — déclarez le montant payé par le client. 20% (${(TAUX_COMMISSION*100)}%) seront calculés automatiquement et dus à TravauxPro.`;
+    `${m?.emoji || ''} <strong>${w.prenom} ${w.nom}</strong> — déclarez le montant payé par le client. 10% (${(TAUX_COMMISSION*100)}%) seront calculés automatiquement et dus à TravauxPro.`;
   document.getElementById('declaration-montant').value = '';
   document.getElementById('declaration-note').value = '';
   document.getElementById('declaration-error').style.display = 'none';
@@ -2081,7 +2094,7 @@ document.addEventListener('input', function(e) {
     const preview = document.getElementById('declaration-preview');
     if (!isNaN(val) && val > 0) {
       preview.style.display = 'block';
-      preview.innerHTML = `💰 Commission due (20%) : <strong>${formatFCFA(val * TAUX_COMMISSION)}</strong>`;
+      preview.innerHTML = `💰 Commission due (10%) : <strong>${formatFCFA(val * TAUX_COMMISSION)}</strong>`;
     } else {
       preview.style.display = 'none';
     }
@@ -2159,7 +2172,7 @@ function relancerWorker(workerId) {
   const du = totalDuParWorker(workerId);
   const num = w.phone.replace(/[\s\-\+]/g, '');
   const msg = encodeURIComponent(
-    `Bonjour ${w.prenom}, ceci est un rappel TravauxPro : vous avez actuellement ${formatFCFA(du)} de commission (20%) en attente de règlement pour les services obtenus via la plateforme. Merci de régulariser dès que possible. 🙏`
+    `Bonjour ${w.prenom}, ceci est un rappel TravauxPro : vous avez actuellement ${formatFCFA(du)} de commission (10%) en attente de règlement pour les services obtenus via la plateforme. Merci de régulariser dès que possible. 🙏`
   );
   window.open(`https://wa.me/${num}?text=${msg}`, '_blank');
 }
