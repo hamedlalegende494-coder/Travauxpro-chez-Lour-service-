@@ -657,6 +657,32 @@
   .proof-upload img { max-width: 100%; max-height: 180px; border-radius: 8px; display: block; margin: 0 auto; }
   .proof-upload .proof-hint { font-size: 0.8rem; color: var(--gris-texte); margin-top: 6px; }
 </style>
+<!-- ====== FIREBASE (base de données partagée en ligne) ====== -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+  import {
+    getFirestore, collection, getDocs, setDoc, doc
+  } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+  // 🔧 REMPLACE ces valeurs par celles de TON projet Firebase
+  // (Console Firebase > ⚙️ Paramètres du projet > Tes applications > SDK config)
+  const firebaseConfig = {
+    apiKey: "AIzaSyASTp8BbqR9PnuT-NnHJ1K5wnjuTRIH5LM",
+    authDomain: "travauxpro-1662a.firebaseapp.com",
+    projectId: "travauxpro-1662a",
+    storageBucket: "travauxpro-1662a.firebasestorage.app",
+    messagingSenderId: "491820599319",
+    appId: "1:491820599319:web:700857e13f77b39f517452",
+    measurementId: "G-3G4HDZ14GW"
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db = getFirestore(app);
+
+  // On expose ce qu'il faut sur window pour pouvoir s'en servir
+  // dans le <script> classique plus bas (qui n'est pas un module).
+  window.__firebase = { db, collection, getDocs, setDoc, doc };
+</script>
 </head>
 <body>
 
@@ -1171,33 +1197,38 @@ let workers = [
 let nextId = 22;
 
 
-function init() {
-  loadWorkers();
-  loadConversations();
-  loadCommissions();
-  loadClicsWhatsapp();
+async function init() {
+  await loadWorkers();
+  await loadConversations();
+  await loadCommissions();
+  await loadClicsWhatsapp();
   populateSelects();
   buildTagFilters();
   filtrerWorkers();
   updateStats();
 }
 
-function loadWorkers() {
-  const saved = localStorage.getItem('travauxpro_workers');
-  if (saved) {
-    const parsed = JSON.parse(saved);
-    if (parsed.length > 0) {
-      // Merge demo + saved (avoid duplicates by id)
-      const savedIds = new Set(parsed.map(w => w.id));
-      const demoExtra = workers.filter(w => !savedIds.has(w.id));
-      workers = [...demoExtra, ...parsed];
-      nextId = Math.max(...workers.map(w => w.id)) + 1;
-    }
+async function loadWorkers() {
+  const { db, collection, getDocs } = window.__firebase;
+  const snap = await getDocs(collection(db, 'workers'));
+  const parsed = snap.docs.map(d => d.data());
+  if (parsed.length > 0) {
+    // Merge demo + saved (avoid duplicates by id)
+    const savedIds = new Set(parsed.map(w => w.id));
+    const demoExtra = workers.filter(w => !savedIds.has(w.id));
+    workers = [...demoExtra, ...parsed];
+    nextId = Math.max(...workers.map(w => w.id)) + 1;
   }
 }
 
-function saveWorkers() {
-  localStorage.setItem('travauxpro_workers', JSON.stringify(workers));
+async function saveWorkers() {
+  const { db, doc, setDoc } = window.__firebase;
+  // On enregistre chaque worker dans son propre document
+  // (ainsi deux personnes qui s'inscrivent en même temps
+  // n'écrasent jamais les données l'une de l'autre).
+  await Promise.all(
+    workers.map(w => setDoc(doc(db, 'workers', String(w.id)), w))
+  );
 }
 
 function populateSelects() {
@@ -1669,20 +1700,24 @@ if (!SpeechRec) {
 
 // ========================================================
 // 💬 MESSAGERIE INTERNE (client ↔ professionnel)
-// Stockée dans le navigateur (localStorage). Sert de trace
+// Stockée en ligne (Firestore), partagée entre tous les appareils. Sert de trace
 // écrite ; l'envoi réel / la notification passe par WhatsApp.
 // ========================================================
 let conversations = [];
 let currentRole = 'client'; // 'client' ou 'pro'
 let currentWorkerId = null; // id du worker concerné par la conversation ouverte
 
-function loadConversations() {
-  const saved = localStorage.getItem('travauxpro_messages');
-  conversations = saved ? JSON.parse(saved) : [];
+async function loadConversations() {
+  const { db, collection, getDocs } = window.__firebase;
+  const snap = await getDocs(collection(db, 'conversations'));
+  conversations = snap.docs.map(d => d.data());
 }
 
-function saveConversations() {
-  localStorage.setItem('travauxpro_messages', JSON.stringify(conversations));
+async function saveConversations() {
+  const { db, doc, setDoc } = window.__firebase;
+  await Promise.all(
+    conversations.map(c => setDoc(doc(db, 'conversations', String(c.workerId)), c))
+  );
 }
 
 function getConv(workerId) {
@@ -1853,13 +1888,17 @@ function envoyerMessage() {
 // ========================================================
 let clicsWhatsapp = [];
 
-function loadClicsWhatsapp() {
-  const saved = localStorage.getItem('travauxpro_clics_whatsapp');
-  clicsWhatsapp = saved ? JSON.parse(saved) : [];
+async function loadClicsWhatsapp() {
+  const { db, collection, getDocs } = window.__firebase;
+  const snap = await getDocs(collection(db, 'clicsWhatsapp'));
+  clicsWhatsapp = snap.docs.map(d => d.data());
 }
 
-function saveClicsWhatsapp() {
-  localStorage.setItem('travauxpro_clics_whatsapp', JSON.stringify(clicsWhatsapp));
+async function saveClicsWhatsapp() {
+  const { db, doc, setDoc } = window.__firebase;
+  await Promise.all(
+    clicsWhatsapp.map(c => setDoc(doc(db, 'clicsWhatsapp', String(c.id)), c))
+  );
 }
 
 function nbClicsParWorker(workerId) {
@@ -1975,13 +2014,17 @@ const OM_NUMERO_AFFICHE = "+226 01 03 05 76"; // ← affichage lisible
 let paiementCommId = null;
 let paiementPreuveData = null;
 
-function loadCommissions() {
-  const saved = localStorage.getItem('travauxpro_commissions');
-  commissions = saved ? JSON.parse(saved) : [];
+async function loadCommissions() {
+  const { db, collection, getDocs } = window.__firebase;
+  const snap = await getDocs(collection(db, 'commissions'));
+  commissions = snap.docs.map(d => d.data());
 }
 
-function saveCommissionsData() {
-  localStorage.setItem('travauxpro_commissions', JSON.stringify(commissions));
+async function saveCommissionsData() {
+  const { db, doc, setDoc } = window.__firebase;
+  await Promise.all(
+    commissions.map(c => setDoc(doc(db, 'commissions', String(c.id)), c))
+  );
 }
 
 function formatFCFA(n) {
@@ -2390,7 +2433,16 @@ document.getElementById('modal-paiement').addEventListener('click', function(e) 
 });
 
 
-init();
+// On attend que le module Firebase (chargé en parallèle) soit prêt
+// avant de lancer init(), qui a besoin de window.__firebase.
+function attendreFirebaseEtDemarrer() {
+  if (window.__firebase) {
+    init();
+  } else {
+    setTimeout(attendreFirebaseEtDemarrer, 30);
+  }
+}
+attendreFirebaseEtDemarrer();
 </script>
 </body>
 </html>
