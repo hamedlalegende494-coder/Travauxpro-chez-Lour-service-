@@ -395,6 +395,7 @@
   .m20{ background: #2EFC71; } .a9 { --card-accent: #2EEC71; }
   .m21{ background: #2EFC71; } .a9 { --card-accent: #2FFC91; }
   .m22{ background: #2EFC71; } .a9 { --card-accent: #2FFC81; }
+  
 
   .count-badge {
     background: var(--orange);
@@ -715,7 +716,7 @@
     </div>
     <div class="stats-bar">
       <div class="stat"><div class="num" id="stat-workers">0</div><div class="lbl">Professionnels inscrits</div></div>
-      <div class="stat"><div class="num">22</div><div class="lbl">Catégories de métiers</div></div>
+      <div class="stat"><div class="num">23</div><div class="lbl">Catégories de métiers</div></div>
       <div class="stat"><div class="num">100%</div><div class="lbl">Contact direct WhatsApp</div></div>
     </div>
   </div>
@@ -1175,18 +1176,19 @@ const METIERS = [
   { id: 7, nom: "DJ de cérémonie",     emoji: "🎧", classe: "m7 a7" },
   { id: 8, nom: "Couturier / Couturière", emoji: "🧵", classe: "m8 a8" },
   { id: 9, nom: "Laveur de véhicules", emoji: "🚗", classe: "m9 a9" },
-  { id: 10, nom: "Ferrailleur",          emoji: "🪴", classe: "m10 a10" },
+  { id: 10, nom: "Ferrailleur",          emoji: "⛓️", classe: "m10 a10" },
   { id: 11, nom: "Taxi",               emoji: "🚗", classe: "m11 a11" },
   { id: 12, nom: "Graphiste",          emoji: "🎨", classe: "m12 a12" },
-  { id: 13, nom: "Photographe",        emoji: "🪴", classe: "m13 a13" },
-  { id: 14, nom: "Mécanicien de moto",        emoji: "🪴", classe: "m14 a14" },
+  { id: 13, nom: "Photographe",        emoji: "📷", classe: "m13 a13" },
+  { id: 14, nom: "Mécanicien de moto",        emoji: "🏍️", classe: "m14 a14" },
   { id: 15, nom: "Soudeur",        emoji: "🪴", classe: "m15 a15" },
-  { id: 16, nom: "Coiffeur",        emoji: "🪴", classe: "m16 a16" },
-  { id: 17, nom: "Maçon",        emoji: "🪴", classe: "m17 a17" },
+  { id: 16, nom: "Coiffeur",        emoji: "✂️", classe: "m16 a16" },
+  { id: 17, nom: "Maçon",        emoji: "🪏", classe: "m17 a17" },
   { id: 18, nom: "Carrossier",        emoji: "🪴", classe: "m18 a18" },
   { id: 19, nom: "Carreleur",        emoji: "🪴", classe: "m19 a19" },
   { id: 20, nom: "Etanchéité",        emoji: "🪴", classe: "m20 a20" },
-  { id: 21, nom: "Charpentier",        emoji: "🪴", classe: "m21 a21" }
+  { id: 21, nom: "Charpentier",        emoji: "🪚", classe: "m21 a21" },
+  { id: 22, nom: "Maître de maison",   emoji: "📕", classe: "m22 a22" }
 ];
 
 
@@ -1194,7 +1196,7 @@ let workers = [
   
 ];
 
-let nextId = 22;
+let nextId = 23;
 
 
 async function init() {
