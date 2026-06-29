@@ -704,6 +704,9 @@
   // dans le <script> classique plus bas (qui n'est pas un module).
   window.__firebase = { db, collection, getDocs, setDoc, doc, deleteDoc };
 </script>
+	<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#17375c">
+<link rel="apple-touch-icon" href="icon-192.png">
 </head>
 <body>
 
@@ -2539,5 +2542,14 @@ function attendreFirebaseEtDemarrer() {
 }
 attendreFirebaseEtDemarrer();
 </script>
+	<script>
+  if ('serviceWorker' in navigator) {
+    window.addEventListener('load', () => {
+      navigator.serviceWorker.register('service-worker.js')
+        .then(() => console.log('Service worker enregistré'))
+        .catch((err) => console.warn('Erreur service worker:', err));
+    });
+  }
+	</script>
 </body>
 </html>
