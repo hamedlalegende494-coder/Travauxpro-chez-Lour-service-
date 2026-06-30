@@ -417,20 +417,21 @@
   .m7 { background: #FF6B8A; } .a7 { --card-accent: #FF6B8A; }
   .m8 { background: #6C5CE7; } .a8 { --card-accent: #6C5CE7; }
   .m9 { background: #2ECC71; } .a9 { --card-accent: #2ECC71; }
-  .m10{ background: #2EFC71; } .a9 { --card-accent: #2EFC71; }
-  .m11{ background: #2EFC71; } .a9 { --card-accent: #2FFC71; }
-  .m12{ background: #2EFC71; } .a9 { --card-accent: #2EEC71; }
-  .m13{ background: #2EFC71; } .a9 { --card-accent: #EE6C71; }
-  .m14{ background: #2EFC71; } .a9 { --card-accent: #2GFC71; }
-  .m15{ background: #2EFC71; } .a9 { --card-accent: #2HFC71; }
-  .m16{ background: #2EFC71; } .a9 { --card-accent: #7EFC71; }
-  .m17{ background: #2EFC71; } .a9 { --card-accent: #FF9E2C; }
-  .m18{ background: #2EFC71; } .a9 { --card-accent: #2EFC71; }
-  .m19{ background: #2EFC71; } .a9 { --card-accent: #2HFC81; }
-  .m20{ background: #2EFC71; } .a9 { --card-accent: #2EEC71; }
-  .m21{ background: #2EFC71; } .a9 { --card-accent: #2FFC91; }
-  .m22{ background: #2EFC71; } .a9 { --card-accent: #2FFC81; }
-  .m23{ background: #2EFC71; } .a9 { --card-accent: #3FFC81; }
+  .m10{ background: #2EFC71; } .a10 { --card-accent: #2EFC71; }
+  .m11{ background: #2EFC71; } .a11 { --card-accent: #2FFC71; }
+  .m12{ background: #2EFC71; } .a12 { --card-accent: #2EEC71; }
+  .m13{ background: #2EFC71; } .a13 { --card-accent: #EE6C71; }
+  .m14{ background: #2EFC71; } .a14 { --card-accent: #2GFC71; }
+  .m15{ background: #2EFC71; } .a15 { --card-accent: #2HFC71; }
+  .m16{ background: #2EFC71; } .a16 { --card-accent: #7EFC71; }
+  .m17{ background: #2EFC71; } .a17 { --card-accent: #FF9E2C; }
+  .m18{ background: #2EFC71; } .a18 { --card-accent: #2EFC71; }
+  .m19{ background: #2EFC71; } .a19 { --card-accent: #2HFC81; }
+  .m20{ background: #2EFC71; } .a20 { --card-accent: #2EEC71; }
+  .m21{ background: #2EFC71; } .a21 { --card-accent: #2FFC91; }
+  .m22{ background: #2EFC71; } .a22 { --card-accent: #2FFC81; }
+  .m23{ background: #2EFC71; } .a23 { --card-accent: #3FFC81; }
+  .m24{ background: #2EFC71; } .a24 { --card-accent: #3FFF81; }
   
 
   .count-badge {
@@ -772,7 +773,7 @@
     </div>
     <div class="stats-bar">
       <div class="stat"><div class="num" id="stat-workers">0</div><div class="lbl">Professionnels inscrits</div></div>
-      <div class="stat"><div class="num">24</div><div class="lbl">Catégories de métiers</div></div>
+      <div class="stat"><div class="num">25</div><div class="lbl">Catégories de métiers</div></div>
       <div class="stat"><div class="num">100%</div><div class="lbl">Contact direct WhatsApp</div></div>
     </div>
   </div>
@@ -1279,7 +1280,9 @@ const METIERS = [
   { id: 20, nom: "Etanchéité",        emoji: "🪴", classe: "m20 a20" },
   { id: 21, nom: "Charpentier",        emoji: "🪚", classe: "m21 a21" },
   { id: 22, nom: "Maître de maison",   emoji: "📕", classe: "m22 a22" },
-  { id: 23, nom: "Cadreur", emoji: "🎥", classe: "m23 a23" }
+  { id: 23, nom: "Cadreur", emoji: "🎥", classe: "m23 a23" },
+  { id: 24, nom: "Énergie solaire", emoji: "🪴", classe: "m24 a24" }
+
 ];
 
 
@@ -1287,7 +1290,7 @@ let workers = [
   
 ];
 
-let nextId = 24;
+let nextId = 25;
 
 
 async function init() {
