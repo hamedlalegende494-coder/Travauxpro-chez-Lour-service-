@@ -431,6 +431,7 @@
   .m21{ background: #2EFC71; } .a9 { --card-accent: #2FFC91; }
   .m22{ background: #2EFC71; } .a9 { --card-accent: #2FFC81; }
   .m23{ background: #2EFC71; } .a9 { --card-accent: #3FFC81; }
+  .m24{ background: #2EFC71; } .a9 { --card-accent: #3HFC81; }
   
 
   .count-badge {
@@ -755,7 +756,7 @@
     </div>
     <div class="stats-bar">
       <div class="stat"><div class="num" id="stat-workers">0</div><div class="lbl">Professionnels inscrits</div></div>
-      <div class="stat"><div class="num">24</div><div class="lbl">Catégories de métiers</div></div>
+      <div class="stat"><div class="num">25</div><div class="lbl">Catégories de métiers</div></div>
       <div class="stat"><div class="num">100%</div><div class="lbl">Contact direct WhatsApp</div></div>
     </div>
   </div>
@@ -1240,7 +1241,8 @@ const METIERS = [
   { id: 20, nom: "Etanchéité",        emoji: "🪴", classe: "m20 a20" },
   { id: 21, nom: "Charpentier",        emoji: "🪚", classe: "m21 a21" },
   { id: 22, nom: "Maître de maison",   emoji: "📕", classe: "m22 a22" },
-  { id: 23, nom: "Cadreur", emoji: "🎥", classe: "m23 a23" }
+  { id: 23, nom: "Cadreur", emoji: "🎥", classe: "m23 a23" },
+  { id: 24, nom: "Énergie solaire", emoji: "🪴", classe: "m24 a24}
 ];
 
 
@@ -1248,7 +1250,7 @@ let workers = [
   
 ];
 
-let nextId = 24;
+let nextId = 25;
 
 
 async function init() {
