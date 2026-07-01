@@ -432,7 +432,7 @@
   .m22{ background: #2EFC71; } .a22 { --card-accent: #2FFC81; }
   .m23{ background: #2EFC71; } .a23 { --card-accent: #3FFC81; }
   .m24{ background: #2EFC71; } .a24 { --card-accent: #3FFF81; }
-  
+  .m25{ background: #2EFC71; } .a24 { --card-accent: #1GGG51; }
 
   .count-badge {
     background: var(--orange);
@@ -773,7 +773,7 @@
     </div>
     <div class="stats-bar">
       <div class="stat"><div class="num" id="stat-workers">0</div><div class="lbl">Professionnels inscrits</div></div>
-      <div class="stat"><div class="num">25</div><div class="lbl">Catégories de métiers</div></div>
+      <div class="stat"><div class="num">26</div><div class="lbl">Catégories de métiers</div></div>
       <div class="stat"><div class="num">100%</div><div class="lbl">Contact direct WhatsApp</div></div>
     </div>
   </div>
@@ -1281,7 +1281,9 @@ const METIERS = [
   { id: 21, nom: "Charpentier",        emoji: "🪚", classe: "m21 a21" },
   { id: 22, nom: "Maître de maison",   emoji: "📕", classe: "m22 a22" },
   { id: 23, nom: "Cadreur", emoji: "🎥", classe: "m23 a23" },
-  { id: 24, nom: "Énergie solaire", emoji: "🪴", classe: "m24 a24" }
+  { id: 24, nom: "Énergie solaire", emoji: "🪴", classe: "m24 a24" },
+  { id: 25, nom: "Informaticien", emoji: "🪴", classe: "m25 a25" }
+	
 
 ];
 
@@ -1290,7 +1292,7 @@ let workers = [
   
 ];
 
-let nextId = 25;
+let nextId = 26;
 
 
 async function init() {
